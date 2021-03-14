@@ -16,6 +16,7 @@ public class UserPrefs implements ReadOnlyUserPrefs {
     private GuiSettings guiSettings = new GuiSettings();
     private Path addressBookFilePath = Paths.get("data" , "addressbook.json");
     private Path uniqueFoodListFilePath = Paths.get("data" , "foodlist.json");
+    private Path foodIntakeListFilePath = Paths.get("data" , "foodintakelist.json");
 
     /**
      * Creates a {@code UserPrefs} with default values.
@@ -56,6 +57,10 @@ public class UserPrefs implements ReadOnlyUserPrefs {
         return uniqueFoodListFilePath;
     }
 
+    public Path getFoodIntakeListFilePath() {
+        return foodIntakeListFilePath;
+    }
+
     public void setAddressBookFilePath(Path addressBookFilePath) {
         requireNonNull(addressBookFilePath);
         this.addressBookFilePath = addressBookFilePath;
@@ -64,6 +69,11 @@ public class UserPrefs implements ReadOnlyUserPrefs {
     public void setUniqueFoodListFilePath(Path uniqueFoodListFilePath) {
         requireNonNull(uniqueFoodListFilePath);
         this.uniqueFoodListFilePath = uniqueFoodListFilePath;
+    }
+
+    public void setFoodIntakeListFilePath(Path foodIntakeListFilePath) {
+        requireNonNull(foodIntakeListFilePath);
+        this.foodIntakeListFilePath = foodIntakeListFilePath;
     }
 
     @Override
@@ -79,12 +89,13 @@ public class UserPrefs implements ReadOnlyUserPrefs {
 
         return guiSettings.equals(o.guiSettings)
                 && addressBookFilePath.equals(o.addressBookFilePath)
-                && uniqueFoodListFilePath.equals(o.uniqueFoodListFilePath);
+                && uniqueFoodListFilePath.equals(o.uniqueFoodListFilePath)
+                && foodIntakeListFilePath.equals(o.foodIntakeListFilePath);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(guiSettings, addressBookFilePath, uniqueFoodListFilePath);
+        return Objects.hash(guiSettings, addressBookFilePath, uniqueFoodListFilePath, foodIntakeListFilePath);
     }
 
     @Override
@@ -93,6 +104,7 @@ public class UserPrefs implements ReadOnlyUserPrefs {
         sb.append("Gui Settings : " + guiSettings);
         sb.append("\nLocal data file location : " + addressBookFilePath);
         sb.append("\nLocal data file location : " + uniqueFoodListFilePath);
+        sb.append("\nLocal data file location : " + foodIntakeListFilePath);
         return sb.toString();
     }
 

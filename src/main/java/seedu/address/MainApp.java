@@ -21,16 +21,10 @@ import seedu.address.model.ModelManager;
 import seedu.address.model.ReadOnlyAddressBook;
 import seedu.address.model.ReadOnlyUserPrefs;
 import seedu.address.model.UserPrefs;
+import seedu.address.model.food.FoodIntakeList;
 import seedu.address.model.food.UniqueFoodList;
 import seedu.address.model.util.SampleDataUtil;
-import seedu.address.storage.AddressBookStorage;
-import seedu.address.storage.JsonAddressBookStorage;
-import seedu.address.storage.JsonUniqueFoodListStorage;
-import seedu.address.storage.JsonUserPrefsStorage;
-import seedu.address.storage.Storage;
-import seedu.address.storage.StorageManager;
-import seedu.address.storage.UniqueFoodListStorage;
-import seedu.address.storage.UserPrefsStorage;
+import seedu.address.storage.*;
 import seedu.address.ui.Ui;
 import seedu.address.ui.UiManager;
 
@@ -62,7 +56,9 @@ public class MainApp extends Application {
         AddressBookStorage addressBookStorage = new JsonAddressBookStorage(userPrefs.getAddressBookFilePath());
         UniqueFoodListStorage uniqueFoodListStorage =
                 new JsonUniqueFoodListStorage(userPrefs.getUniqueFoodListFilePath());
-        storage = new StorageManager(addressBookStorage, uniqueFoodListStorage, userPrefsStorage);
+        FoodIntakeListStorage foodIntakeListStorage =
+                new JsonFoodIntakeListStorage(userPrefs.getFoodIntakeListFilePath());
+        storage = new StorageManager(addressBookStorage, uniqueFoodListStorage, foodIntakeListStorage, userPrefsStorage);
 
         initLogging(config);
 
@@ -84,28 +80,37 @@ public class MainApp extends Application {
         ReadOnlyAddressBook initialData;
         Optional<UniqueFoodList> uniqueFoodListOptional;
         UniqueFoodList uniqueFoodList;
+        Optional<FoodIntakeList> foodIntakeListOptional;
+        FoodIntakeList foodIntakeList;
         try {
             addressBookOptional = storage.readAddressBook();
             uniqueFoodListOptional = storage.readFoodList();
+            foodIntakeListOptional = storage.readFoodIntakeList();
             if (!addressBookOptional.isPresent()) {
                 logger.info("Data file not found. Will be starting with a sample AddressBook");
             }
             if (!uniqueFoodListOptional.isPresent()) {
                 logger.info("Food data file not found. Will be starting fresh");
             }
+            if (!foodIntakeListOptional.isPresent()) {
+                logger.info("Food intake data file not found. Will be starting fresh");
+            }
             initialData = addressBookOptional.orElseGet(SampleDataUtil::getSampleAddressBook);
             uniqueFoodList = uniqueFoodListOptional.orElse(new UniqueFoodList());
+            foodIntakeList = foodIntakeListOptional.orElse(new FoodIntakeList());
         } catch (DataConversionException e) {
             logger.warning("Data file not in the correct format. Will be starting with an empty AddressBook");
             initialData = new AddressBook();
             uniqueFoodList = new UniqueFoodList();
+            foodIntakeList = new FoodIntakeList();
         } catch (IOException e) {
             logger.warning("Problem while reading from the file. Will be starting with an empty AddressBook");
             initialData = new AddressBook();
             uniqueFoodList = new UniqueFoodList();
+            foodIntakeList = new FoodIntakeList();
         }
 
-        return new ModelManager(initialData, uniqueFoodList, userPrefs);
+        return new ModelManager(initialData, uniqueFoodList, foodIntakeList, userPrefs);
     }
 
     private void initLogging(Config config) {

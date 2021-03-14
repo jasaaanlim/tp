@@ -31,8 +31,7 @@ public class AddressBook implements ReadOnlyAddressBook {
     {
         persons = new UniquePersonList();
         foodList = new UniqueFoodList();
-        foodIntakeList = new FoodIntakeList(LocalDate.parse("11 Mar 2021",
-                DateTimeFormatter.ofPattern(DATE_FORMAT)));
+        foodIntakeList = new FoodIntakeList();
     }
 
     public AddressBook() {
@@ -47,12 +46,14 @@ public class AddressBook implements ReadOnlyAddressBook {
     }
 
     /**
-     * Creates an AddressBook using the Persons in the {@code toBeCopied}, and adds the associated {@code FoodList}.
+     * Creates an AddressBook using the Persons in the {@code toBeCopied}. Adds
+     * the associated {@code FoodList} {@code FoodIntakeList}.
      */
-    public AddressBook(ReadOnlyAddressBook toBeCopied, UniqueFoodList uniqueFoodList) {
+    public AddressBook(ReadOnlyAddressBook toBeCopied, UniqueFoodList uniqueFoodList, FoodIntakeList foodIntakeList) {
         this();
         resetData(toBeCopied);
         this.foodList = uniqueFoodList;
+        this.foodIntakeList = foodIntakeList;
     }
 
     //// list overwrite operations

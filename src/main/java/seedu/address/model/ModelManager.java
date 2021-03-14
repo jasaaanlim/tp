@@ -27,27 +27,29 @@ public class ModelManager implements Model {
     private final AddressBook addressBook;
     private final UserPrefs userPrefs;
     private final UniqueFoodList uniqueFoodList;
+    private final FoodIntakeList foodIntakeList;
     private final FilteredList<Person> filteredPersons;
 
     /**
      * Initializes a ModelManager with the given addressBook and userPrefs.
      */
-    public ModelManager(ReadOnlyAddressBook addressBook, UniqueFoodList uniqueFoodList, ReadOnlyUserPrefs userPrefs) {
+    public ModelManager(ReadOnlyAddressBook addressBook, UniqueFoodList uniqueFoodList, FoodIntakeList foodIntakeList, ReadOnlyUserPrefs userPrefs) {
         super();
         requireAllNonNull(addressBook, userPrefs);
 
-        this.addressBook = new AddressBook(addressBook, uniqueFoodList);
+        this.addressBook = new AddressBook(addressBook, uniqueFoodList, foodIntakeList);
         this.uniqueFoodList = uniqueFoodList;
+        this.foodIntakeList = foodIntakeList;
         this.userPrefs = new UserPrefs(userPrefs);
 
-        logger.fine("Initializing with address book: " + addressBook + " and unique food list: " + uniqueFoodList
-                + " and user prefs " + userPrefs);
+        logger.fine("Initializing with address book: " + addressBook + ", unique food list: " + uniqueFoodList
+                + ", food intake list: " + foodIntakeList + " and user prefs " + userPrefs);
 
         filteredPersons = new FilteredList<>(this.addressBook.getPersonList());
     }
 
     public ModelManager() {
-        this(new AddressBook(), new UniqueFoodList(), new UserPrefs());
+        this(new AddressBook(), new UniqueFoodList(), new FoodIntakeList(), new UserPrefs());
     }
 
     //=========== UserPrefs ==================================================================================
@@ -155,6 +157,7 @@ public class ModelManager implements Model {
         return addressBook.equals(other.addressBook)
                 && userPrefs.equals(other.userPrefs)
                 && uniqueFoodList.equals(other.uniqueFoodList)
+                && foodIntakeList.equals(other.foodIntakeList)
                 && filteredPersons.equals(other.filteredPersons);
     }
 
@@ -200,6 +203,6 @@ public class ModelManager implements Model {
 
     @Override
     public FoodIntakeList getFoodIntakeList() {
-        return addressBook.getFoodIntakeList();
+        return foodIntakeList;
     }
 }
